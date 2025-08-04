@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <!-- 作者：忆痕 -->
+  <!-- QQ：93775037 -->
+  <!-- 仓库地址：https://github.com/a937750307/release-page -->
+  <meta charset="UTF-8">
+  <title>开源分享页 · 模板源码</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta property="og:image" content="avatar.webp">
+  <meta property="og:url" content="https://你的域名.com/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌻</text></svg>">
+  <link rel="preload" href="bg.webp" as="image">
+  <!-- Google 字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;500&display=swap" rel="stylesheet">
+  <!-- FontAwesome 图标 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+  /* ===== 全局变量 ===== */
+  :root{
+    --bg:#f5f7fa;
+    --card:rgba(255,255,255,.78);
+    --main:#0066ff;
+    --text:#333;
+    --sub:#666;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#121212;
+      --card:rgba(30,30,30,.78);
+      --main:#0af;
+      --text:#eee;
+      --sub:#aaa;
+    }
+  }
+
+  /* ===== 通用样式 ===== */
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Noto Sans SC',sans-serif;
+    background:url("bg.webp") no-repeat center/cover fixed;
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+
+
+  /* ===== 主页头像旋转 ===== */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#intro-logo {
+  animation: spin 3s linear infinite;
+}
+
+
+
+  /* ===== 主页卡片 ===== */
+  .card{
+    background:var(--card);
+    border-radius:16px;
+    box-shadow:0 12px 32px rgba(0,0,0,.1);
+    text-align:center;
+    max-width:420px;
+    width:100%;
+    padding:50px 40px;
+    backdrop-filter:blur(6px);
+  }
+  .avatar{width:90px;height:90px;border-radius:50%;margin-bottom:15px}
+  h1{margin:0 0 5px;font-size:26px;font-weight:500}
+  .desc{margin:0 0 30px;font-size:15px;color:var(--sub)}
+
+  /* ===== 社交图标 ===== */
+  .links{display:grid;grid-template-columns:repeat(4,1fr);gap:25px 15px}
+  .links a{color:var(--main);text-decoration:none;font-size:13px;display:flex;flex-direction:column;align-items:center}
+  .links i{font-size:28px;margin-bottom:6px}
+  .links a:hover{transform:translateY(-3px)}
+
+  /* ===== 履历 ===== */
+  .resume-wrap{position:relative;margin:30px auto;max-width:420px}
+  .resume-scroll{display:flex;gap:12px;overflow-x:auto;scroll-behavior:smooth;padding:10px 0;scrollbar-width:none}
+  .resume-scroll::-webkit-scrollbar{display:none}
+  .resume-card{flex:0 0 260px;padding:14px 12px;border-radius:14px;background:rgba(255,255,255,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);transition:.3s}
+  .resume-card h3{margin:0 0 6px;font-size:14px;font-weight:600;color:var(--main)}
+  .resume-card p{margin:0;font-size:12px;line-height:1.5;color:var(--sub)}
+
+  /* 左右箭头：放在卡片内部，不越界 */
+  .nav{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:var(--main);
+    color:#fff;
+    border:none;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    cursor:pointer;
+    z-index:10;          /* 确保在卡片之上 */
+  }
+  .prev{left:-16px}       /* 调整距离，避免跑出卡片 */
+  .next{right:-16px}
+
+  footer{margin-top:35px;font-size:12px;color:#999}
+  footer a{color:#999;text-decoration:none}
+  footer a:hover{color:var(--main)}
+
+  /* ===== 水波纹 ===== */
+  .ripple{
+    position:fixed;
+    border-radius:50%;
+    background:rgba(0,150,255,.35);
+    transform:scale(0);
+    animation:rippleAnim .6s ease-out forwards;
+    pointer-events:none;
+    z-index:9999999;   /* 保证在最顶层 */
+  }
+  @keyframes rippleAnim{to{transform:scale(6);opacity:0}}
+
+  /* ===== 开屏特效 ===== */
+  #intro-screen{
+    position:fixed;
+    inset:0;
+    background:#000;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    z-index:99999;
+  }
+  #intro-canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+  .intro-title{
+    font-size:48px;
+    font-weight:600;
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    position:relative;
+    overflow:hidden;
+    white-space:nowrap;
+    letter-spacing:2px;
+  }
+  .intro-title::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:50%;
+    height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);
+    transform:skewX(-25deg);
+    animation:shine 2.5s infinite;
+  }
+  @keyframes shine{to{left:150%}}
+  .intro-sub{margin:12px 0 30px;font-size:18px;color:#8ab4f8}
+  .enter-btn{
+    padding:12px 36px;
+    font-size:16px;
+    border:none;
+    border-radius:30px;
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+    color:#fff;
+    cursor:pointer;
+    transition:.3s;
+  }
+  .enter-btn:hover{transform:scale(1.05)}
+  </style>
+</head>
+
+<body>
+  <!-- ===== 开屏层 ===== -->
+  <div id="intro-screen">
+    <canvas id="intro-canvas"></canvas>
+
+    <!-- 仅按钮可点，其余区域不可穿透 -->
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:auto;z-index:999999;">
+      <div style="text-align:center;">
+      <img id="intro-logo" src="avatar.webp" alt="头像" style="width:100px;height:100px;border-radius:50%;margin-bottom:20px;">
+        <div class="intro-title">你好，这是开源模板</div>
+        <div class="intro-sub">欢迎访问源码分享页</div>
+        <a class="enter-btn" style="text-decoration:none;" href="javascript:void(0)" onclick="enterSite()">点击进入</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 主页内容 ===== -->
+  <div class="card">
+    <img class="avatar" src="avatar.webp" alt="头像">
+    <h1>你好，这是开源模板</h1>
+    <p class="desc">分享源码 · 共同进步</p>
+
+    <!-- 社交图标 -->
+    <div class="links">
+      <a href="https://space.bilibili.com/请替换为UID" target="_blank"><i class="fab fa-bilibili"></i>哔哩哔哩</a>
+      <a href="https://www.xiaohongshu.com/user/profile/请替换为UID" target="_blank"><i class="fab fa-instagram"></i>小红书</a>
+      <a href="https://weibo.com/u/请替换为UID/" target="_blank"><i class="fab fa-weibo"></i>微博</a>
+      <a href="https://github.com/请替换为你的GitHub用户名" target="_blank"><i class="fab fa-github"></i>GitHub</a>
+      <a href="javascript:;" onclick="copy('请替换为微信号')"><i class="fab fa-weixin"></i>微信联系</a>
+      <a href="javascript:;" onclick="copy('请替换为QQ号')"><i class="fab fa-qq"></i>QQ联系</a>
+      <a href="javascript:;" onclick="copy('请替换为邮箱地址')"><i class="fas fa-envelope"></i>邮箱联系</a>
+      <a href="https://tieba.baidu.com/home/main?id=请替换为贴吧ID" target="_blank">
+        <svg width="34" height="34" viewBox="0 0 1024 1024" fill="currentColor">
+          <rect x="64" y="64" width="895" height="895" rx="160" ry="160" fill="currentColor"/>
+          <text x="512" y="550" font-size="550" font-family="PingFang SC, Arial, sans-serif"
+                font-weight="700" text-anchor="middle" dominant-baseline="middle"
+                fill="#fff">贴</text>
+        </svg>百度贴吧
+      </a>
+    </div>
+
+    <!-- 横向履历 -->
+    <div class="resume-wrap">
+      <button class="nav prev"><i class="fas fa-chevron-left"></i></button>
+      <div class="resume-scroll" id="rs">
+        <div class="resume-card"><h3><i class="fas fa-user-circle"></i> 关于作者</h3><p>这是开源模板<br>请替换为个人简介</p></div>
+        <div class="resume-card"><h3><i class="fas fa-tools"></i> 技能清单</h3><p>请替换为你的技能<br>例如：前端 / 设计 / 摄影</p></div>
+        <div class="resume-card"><h3><i class="fas fa-graduation-cap"></i> 教育背景</h3><p>请替换为你的专业</p></div>
+        <div class="resume-card"><h3><i class="fas fa-book"></i> 资格证书</h3><p>请替换为你的证书<br>例如：英语 / 驾照 / 资格证</p></div>
+      </div>
+      <button class="nav next"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <!-- 动态时间 -->
+    <div class="time-badge">
+      <span id="nowTime">当前时间：加载中…</span><br>
+      <span id="nowDate"></span>
+    </div>
+    <style>
+    .time-badge{
+      margin-top:20px;
+      font-size:14px;
+      color:var(--sub);
+      letter-spacing:.5px;
+    }
+    </style>
+
+    <footer><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">请替换为你的备案号</a></footer>
+  </div>
+
+  <script>
+  /* ===== 复制 ===== */
+  const copy = (t) => navigator.clipboard.writeText(t)
+    .then(() => alert('已复制：' + t))
+    .catch(() => alert('复制失败'));
+
+  /* ===== 左右滚动 ===== */
+  const box = document.getElementById('rs');
+  const w = box.children[0].offsetWidth + 12;
+  document.querySelector('.prev').onclick = () => box.scrollBy({left:-w,behavior:'smooth'});
+  document.querySelector('.next').onclick = () => box.scrollBy({left:w,behavior:'smooth'});
+
+  /* ===== 动态时间 ===== */
+  function updateTime(){
+    const now=new Date();
+    const hh=now.getHours().toString().padStart(2,'0');
+    const mm=now.getMinutes().toString().padStart(2,'0');
+    const ss=now.getSeconds().toString().padStart(2,'0');
+    const y=now.getFullYear();
+    const m=(now.getMonth()+1).toString().padStart(2,'0');
+    const d=now.getDate().toString().padStart(2,'0');
+    const w=['日','一','二','三','四','五','六'][now.getDay()];
+    nowTime.textContent=`当前时间：${hh}:${mm}:${ss}`;
+    nowDate.textContent=`${y}年${m}月${d}日 星期${w}`;
+  }
+  updateTime();
+  setInterval(updateTime,1000);
+
+  /* ===== 全局点击水波纹 ===== */
+  window.addEventListener('mousedown', e => {
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    const size = 50;
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = e.clientX - size / 2 + 'px';
+    ripple.style.top  = e.clientY - size / 2 + 'px';
+    document.body.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  });
+
+  /* ===== 开屏粒子动画 ===== */
+  const cvs = document.getElementById('intro-canvas');
+  const ctx = cvs.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = cvs.width  = window.innerWidth;
+    H = cvs.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.r = Math.random() * 2 + 1;
+      this.dx = (Math.random() - 0.5) * 0.5;
+      this.dy = (Math.random() - 0.5) * 0.5;
+      this.color = `hsl(210,100%,${60 + Math.random() * 20}%)`;
+    }
+    update() {
+      this.x += this.dx;
+      this.y += this.dy;
+      if (this.x < 0 || this.x > W) this.dx *= -1;
+      if (this.y < 0 || this.y > H) this.dy *= -1;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 150; i++) particles.push(new Particle());
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  /* ===== 进入主页 ===== */
+  function enterSite() {
+    const intro = document.getElementById('intro-screen');
+    intro.style.transition = 'opacity 1s';
+    intro.style.opacity = 0;
+    setTimeout(() => intro.remove(), 1000);
+  }
+  /* ===== 禁用右键 & 开发者工具快捷键 ===== */
+  document.oncontextmenu = () => false;
+  document.addEventListener('keydown', e => {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+      e.preventDefault();
+    }
+  });
+  </script>
+</body>
+</html>
