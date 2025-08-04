@@ -19,3 +19,7 @@
 实时时钟：动态显示当前时间和日期，每秒更新，为访问者提供准确的时间信息。
 
 视觉效果：页面包含多种精妙的动画效果，如旋转头像、点击涟漪效果和平滑过渡，共同打造精致专业的视觉体验。
+
+## 截图
+开屏特效![App Screenshot](https://github.com/a937750307/release-page/blob/main/open.png)
+主页图![App Screenshot](https://github.com/a937750307/release-page/blob/main/pages.png)
